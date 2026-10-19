@@ -20,6 +20,7 @@ If you ran `brew tap mesh-town/tap` first, `brew install meshtown` stops with "R
 ```sh
 meshtown          # starts the menu bar icon
 meshtown --help   # command line help
+meshtown-cli      # runs the node in this terminal, Ctrl+C stops it
 ```
 
 ## Upgrade
@@ -45,7 +46,7 @@ downloaded files, so Gatekeeper shows no prompt. No root access and no backgroun
 
 The `bump` workflow runs once a day (or manually from the Actions tab) and takes the latest release of
 `mesh-town/meshtown`. It runs `scripts/bump.sh <version>`, which reads `SHA256SUMS` of that release and
-rewrites the version inside `url` and the `sha256` in `Formula/meshtown.rb`. `scripts/bump_test.sh` tests the script
+rewrites the version inside both `url`s (the app and the `cli` resource) and both `sha256`s in `Formula/meshtown.rb`. `scripts/bump_test.sh` tests the script
 offline. The `check` workflow runs `brew style`, `brew audit --strict` and those tests.
 
 ## Licenses
