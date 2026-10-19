@@ -3,6 +3,8 @@ name: bump
 on:
   schedule:
     - cron: "17 5 * * *"
+  repository_dispatch:
+    types: [release]
   workflow_dispatch:
     inputs:
       version:
@@ -13,6 +15,11 @@ on:
 permissions:
   contents: write
 
+# Cron, manual and release-triggered runs share one queue so two pushes never race.
+concurrency:
+  group: bump
+  cancel-in-progress: false
+
 jobs:
   bump:
     runs-on: ubuntu-latest
@@ -22,9 +29,10 @@ jobs:
       - name: Resolve version
         env:
           INPUT_VERSION: ${{ inputs.version }}
+          PAYLOAD_VERSION: ${{ github.event.client_payload.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          version="$INPUT_VERSION"
+          version="${INPUT_VERSION:-$PAYLOAD_VERSION}"
           if [ -z "$version" ]; then
             tag="$(gh release view --repo mesh-town/meshtown --json tagName -q .tagName)"
             version="${tag#v}"

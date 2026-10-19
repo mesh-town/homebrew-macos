@@ -1,20 +1,39 @@
 class Meshtown < Formula
   desc "Open websites through the computers of your network's members"
   homepage "https://github.com/mesh-town/meshtown"
-  url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/MeshTown-macos-arm64-0.3.1.zip"
-  sha256 "f7d7ba1311a838a2f333b670cb18aa701924ba93aa6e8ca16b77991f3d309956"
+  # The checksum list of the release pins the archives below.
+  url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/SHA256SUMS"
+  sha256 "e623f1d985a164c362c7d77f55e16b49ed612d57a2a4ee4a1629cc711fdd80ad"
   license "AGPL-3.0-only"
 
-  depends_on arch: :arm64
   depends_on :macos
 
-  resource "cli" do
-    url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/meshtown-cli-0.3.1-aarch64-apple-darwin.tar.gz"
-    sha256 "caf17412056526a5ddd17ce15b6f0d5363522cad7b613de76773479e2a980a9f"
+  on_arm do
+    resource "app" do
+      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/MeshTown-macos-arm64-0.3.1.zip"
+      sha256 "f7d7ba1311a838a2f333b670cb18aa701924ba93aa6e8ca16b77991f3d309956"
+    end
+
+    resource "cli" do
+      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/meshtown-cli-0.3.1-aarch64-apple-darwin.tar.gz"
+      sha256 "caf17412056526a5ddd17ce15b6f0d5363522cad7b613de76773479e2a980a9f"
+    end
+  end
+
+  on_intel do
+    resource "app" do
+      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/MeshTown-macos-x86_64-0.3.1.zip"
+      sha256 "615d0db58ccab5b2b690d3f27a053ecca3b255f9cdb9d4a9cbbe4a8f109d2f4c"
+    end
+
+    resource "cli" do
+      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/meshtown-cli-0.3.1-x86_64-apple-darwin.tar.gz"
+      sha256 "2be3ea1cc8b740247794fc571a374c22f069f0cfc410fbbab0493cc1385dc523"
+    end
   end
 
   def install
-    (prefix/"MeshTown.app").install Dir["*"]
+    resource("app").stage { (prefix/"MeshTown.app").install Dir["*"] }
 
     (bin/"meshtown").write <<~SH
       #!/bin/sh

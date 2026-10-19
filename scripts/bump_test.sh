@@ -26,11 +26,20 @@ SHA_D="FEDCBA9876543210fedcba9876543210FEDCBA9876543210fedcba9876543210"
 SHA_D_LOW="$(printf '%s' "$SHA_D" | tr 'A-F' 'a-f')"
 APP="MeshTown-macos-arm64-1.2.3.zip"
 CLI="meshtown-cli-1.2.3-aarch64-apple-darwin.tar.gz"
+APP_X="MeshTown-macos-x86_64-1.2.3.zip"
+CLI_X="meshtown-cli-1.2.3-x86_64-apple-darwin.tar.gz"
+SHA_E="$(printf 'e%.0s' $(seq 1 64))"
+SHA_F="$(printf 'f%.0s' $(seq 1 64))"
 
 sums_ok="$work/sums_ok"
-printf '%s  MeshTown-macos-x86_64-1.2.3.zip\n%s  %s\n%s  %s\n' "$SHA_A" "$SHA_B" "$APP" "$SHA_D" "$CLI" > "$sums_ok"
+printf '%s  %s\n%s  %s\n%s  %s\n%s  %s\n' "$SHA_A" "$APP_X" "$SHA_B" "$APP" "$SHA_D" "$CLI" "$SHA_E" "$CLI_X" > "$sums_ok"
 sums_star="$work/sums_star"
-printf '%s *%s\n%s *%s\n' "$SHA_A" "$APP" "$SHA_C" "$CLI" > "$sums_star"
+printf '%s *%s\n%s *%s\n%s *%s\n%s *%s\n' "$SHA_A" "$APP" "$SHA_C" "$CLI" "$SHA_E" "$APP_X" "$SHA_F" "$CLI_X" > "$sums_star"
+
+# sha_of <archive>: the sha256 value on the line right after the url that names the archive.
+sha_of() { grep -A1 -F "/$1\"" "$BUMP_FORMULA" | tail -n 1 | sed 's/.*"\(.*\)"/\1/'; }
+# url_of <archive>: the full url line naming the archive, indentation included.
+url_of() { grep -F "/$1\"" "$BUMP_FORMULA"; }
 
 # expect_fail <name> <args...>: bump must exit non-zero, print to stderr, leave the formula untouched.
 expect_fail() {
@@ -51,13 +60,19 @@ expect_fail() {
 # happy path
 reset
 if "$bump" 1.2.3 --sums "$sums_ok" > /dev/null 2>&1; then
-  want='  url "https://github.com/mesh-town/meshtown/releases/download/v1.2.3/MeshTown-macos-arm64-1.2.3.zip"'
-  [ "$(grep '^  url ' "$BUMP_FORMULA")" = "$want" ] && pass "version updated inside url" || fail "version updated inside url"
-  want='    url "https://github.com/mesh-town/meshtown/releases/download/v1.2.3/meshtown-cli-1.2.3-aarch64-apple-darwin.tar.gz"'
-  [ "$(grep '^    url ' "$BUMP_FORMULA")" = "$want" ] && pass "cli resource url updated" || fail "cli resource url updated"
-  grep -qF "    sha256 \"$SHA_D_LOW\"" "$BUMP_FORMULA" && pass "cli sha256 updated, lowercased" || fail "cli sha256 updated, lowercased"
+  base="https://github.com/mesh-town/meshtown/releases/download/v1.2.3"
+  [ "$(url_of "$APP")" = "      url \"$base/$APP\"" ] && pass "arm64 app url updated" || fail "arm64 app url updated"
+  [ "$(url_of "$CLI")" = "      url \"$base/$CLI\"" ] && pass "arm64 cli url updated" || fail "arm64 cli url updated"
+  [ "$(url_of "$APP_X")" = "      url \"$base/$APP_X\"" ] && pass "intel app url updated" || fail "intel app url updated"
+  [ "$(url_of "$CLI_X")" = "      url \"$base/$CLI_X\"" ] && pass "intel cli url updated" || fail "intel cli url updated"
+  [ "$(sha_of "$APP")" = "$SHA_B_LOW" ] && pass "arm64 app sha256, lowercased" || fail "arm64 app sha256, lowercased"
+  [ "$(sha_of "$CLI")" = "$SHA_D_LOW" ] && pass "arm64 cli sha256, lowercased" || fail "arm64 cli sha256, lowercased"
+  [ "$(sha_of "$APP_X")" = "$SHA_A" ] && pass "intel app sha256" || fail "intel app sha256"
+  [ "$(sha_of "$CLI_X")" = "$SHA_E" ] && pass "intel cli sha256" || fail "intel cli sha256"
+  [ "$(url_of SHA256SUMS)" = "  url \"$base/SHA256SUMS\"" ] && pass "sums url updated" || fail "sums url updated"
+  [ "$(sha_of SHA256SUMS)" = "$(shasum -a 256 "$sums_ok" | awk '{ print $1 }')" ] && pass "sums file sha256" || fail "sums file sha256"
+  [ "$(grep -c 'sha256 "' "$BUMP_FORMULA")" = 5 ] && pass "five sha256 lines" || fail "five sha256 lines"
   grep -q '^  version ' "$BUMP_FORMULA" && fail "no separate version line" || pass "no separate version line"
-  grep -qF "  sha256 \"$SHA_B_LOW\"" "$BUMP_FORMULA" && pass "sha256 updated, lowercased" || fail "sha256 updated, lowercased"
   grep -q 'placeholder hash' "$BUMP_FORMULA" && fail "placeholder comment removed" || pass "placeholder comment removed"
   ruby -c "$BUMP_FORMULA" > /dev/null 2>&1 && pass "ruby -c after bump" || fail "ruby -c after bump"
 else
@@ -72,21 +87,25 @@ else
   fail "idempotent"
 fi
 
-# flags in any order, "*name" form
+# "*name" form
 reset
-"$bump" 1.2.3 --sums "$sums_star" > /dev/null 2>&1 && grep -qF "  sha256 \"$SHA_A\"" "$BUMP_FORMULA" && grep -qF "    sha256 \"$SHA_C\"" "$BUMP_FORMULA" && pass "sums with '*name' form" || fail "sums with '*name' form"
+if "$bump" 1.2.3 --sums "$sums_star" > /dev/null 2>&1 && [ "$(sha_of "$APP")" = "$SHA_A" ] && [ "$(sha_of "$CLI")" = "$SHA_C" ] && [ "$(sha_of "$APP_X")" = "$SHA_E" ] && [ "$(sha_of "$CLI_X")" = "$SHA_F" ]; then
+  pass "sums with '*name' form"
+else
+  fail "sums with '*name' form"
+fi
 
 # file:// sums
 reset
-"$bump" 1.2.3 --sums "file://$sums_ok" > /dev/null 2>&1 && grep -qF "sha256 \"$SHA_B_LOW\"" "$BUMP_FORMULA" && pass "--sums file://" || fail "--sums file://"
+"$bump" 1.2.3 --sums "file://$sums_ok" > /dev/null 2>&1 && [ "$(sha_of "$APP")" = "$SHA_B_LOW" ] && pass "--sums file://" || fail "--sums file://"
 
 # --base-url, flags in the other order
 reset
 if "$bump" 1.2.3 --base-url "http://127.0.0.1:8000/dl/" --sums "$sums_ok" > /dev/null 2>&1; then
-  want='  url "http://127.0.0.1:8000/dl/MeshTown-macos-arm64-1.2.3.zip"'
-  [ "$(grep '^  url ' "$BUMP_FORMULA")" = "$want" ] && pass "--base-url replaces url" || fail "--base-url replaces url"
-  want='    url "http://127.0.0.1:8000/dl/meshtown-cli-1.2.3-aarch64-apple-darwin.tar.gz"'
-  [ "$(grep '^    url ' "$BUMP_FORMULA")" = "$want" ] && pass "--base-url replaces cli url" || fail "--base-url replaces cli url"
+  dl="http://127.0.0.1:8000/dl"
+  [ "$(url_of "$APP")" = "      url \"$dl/$APP\"" ] && pass "--base-url replaces app url" || fail "--base-url replaces app url"
+  [ "$(url_of "$CLI_X")" = "      url \"$dl/$CLI_X\"" ] && pass "--base-url replaces intel cli url" || fail "--base-url replaces intel cli url"
+  [ "$(grep -c "\"$dl/" "$BUMP_FORMULA")" = 5 ] && pass "--base-url replaces all five urls" || fail "--base-url replaces all five urls"
   ruby -c "$BUMP_FORMULA" > /dev/null 2>&1 && pass "ruby -c after --base-url" || fail "ruby -c after --base-url"
 else
   fail "--base-url (bump failed)"
@@ -108,26 +127,41 @@ expect_fail "no archive line (other version)" 9.9.9 --sums "$sums_ok"
 printf 'garbage line\n' > "$work/sums_empty"
 expect_fail "no archive line (garbage)" 1.2.3 --sums "$work/sums_empty"
 
-printf '%s  %s\n%s  %s\n' "abc123" "$APP" "$SHA_C" "$CLI" > "$work/sums_short"
+# sums_with <file> <arm app sha> <arm cli sha> <intel app sha> <intel cli sha>: a complete sums file.
+sums_with() { printf '%s  %s\n%s  %s\n%s  %s\n%s  %s\n' "$2" "$APP" "$3" "$CLI" "$4" "$APP_X" "$5" "$CLI_X" > "$1"; }
+
+sums_with "$work/sums_short" "abc123" "$SHA_C" "$SHA_A" "$SHA_E"
 expect_fail "sha not 64 hex" 1.2.3 --sums "$work/sums_short"
 
-printf '%s  %s\n%s  %s\n' "$(printf 'g%.0s' $(seq 1 64))" "$APP" "$SHA_C" "$CLI" > "$work/sums_nonhex"
+sums_with "$work/sums_nonhex" "$(printf 'g%.0s' $(seq 1 64))" "$SHA_C" "$SHA_A" "$SHA_E"
 expect_fail "sha 64 chars but not hex" 1.2.3 --sums "$work/sums_nonhex"
 
-printf '%s  %s\n%s  %s\n%s  %s\n' "$SHA_A" "$APP" "$SHA_B" "$APP" "$SHA_C" "$CLI" > "$work/sums_dup"
+sums_with "$work/sums_dup" "$SHA_A" "$SHA_C" "$SHA_A" "$SHA_E"
+printf '%s  %s\n' "$SHA_B" "$APP" >> "$work/sums_dup"
 expect_fail "duplicate archive line" 1.2.3 --sums "$work/sums_dup"
+
+sums_with "$work/sums_dupcli" "$SHA_A" "$SHA_C" "$SHA_A" "$SHA_E"
+printf '%s  %s\n' "$SHA_B" "$CLI" >> "$work/sums_dupcli"
+expect_fail "duplicate cli entry" 1.2.3 --sums "$work/sums_dupcli"
+
+sums_with "$work/sums_badcli" "$SHA_A" "xyz" "$SHA_A" "$SHA_E"
+expect_fail "bad cli sha256" 1.2.3 --sums "$work/sums_badcli"
+
+printf '%s  %s\n%s  %s\n%s  %s\n' "$SHA_C" "$CLI" "$SHA_A" "$APP_X" "$SHA_E" "$CLI_X" > "$work/sums_noapp"
+expect_fail "no app entry" 1.2.3 --sums "$work/sums_noapp"
 
 printf '%s  %s\n' "$SHA_A" "$APP" > "$work/sums_nocli"
 expect_fail "no cli entry" 1.2.3 --sums "$work/sums_nocli"
 
-printf '%s  %s\n%s  %s\n%s  %s\n' "$SHA_A" "$APP" "$SHA_B" "$CLI" "$SHA_C" "$CLI" > "$work/sums_dupcli"
-expect_fail "duplicate cli entry" 1.2.3 --sums "$work/sums_dupcli"
+# Intel archives missing: the arm64 entries alone must not be enough.
+printf '%s  %s\n%s  %s\n' "$SHA_A" "$APP" "$SHA_C" "$CLI" > "$work/sums_nointel"
+expect_fail "no intel entries" 1.2.3 --sums "$work/sums_nointel"
 
-printf '%s  %s\n%s  %s\n' "$SHA_A" "$APP" "xyz" "$CLI" > "$work/sums_badcli"
-expect_fail "bad cli sha256" 1.2.3 --sums "$work/sums_badcli"
+printf '%s  %s\n%s  %s\n%s  %s\n' "$SHA_A" "$APP" "$SHA_C" "$CLI" "$SHA_E" "$CLI_X" > "$work/sums_nointelapp"
+expect_fail "no intel app entry" 1.2.3 --sums "$work/sums_nointelapp"
 
-printf '%s  %s\n' "$SHA_C" "$CLI" > "$work/sums_noapp"
-expect_fail "no app entry" 1.2.3 --sums "$work/sums_noapp"
+printf '%s  %s\n%s  %s\n%s  %s\n' "$SHA_A" "$APP" "$SHA_C" "$CLI" "$SHA_E" "$APP_X" > "$work/sums_nointelcli"
+expect_fail "no intel cli entry" 1.2.3 --sums "$work/sums_nointelcli"
 
 echo "# $((total - fails))/$total passed"
 [ "$fails" -eq 0 ]

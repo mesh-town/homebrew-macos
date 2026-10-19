@@ -1,7 +1,7 @@
 # Mesh Town Homebrew tap
 
 Homebrew tap for [Mesh Town](https://github.com/mesh-town/meshtown): open websites through the
-computers of your network's members. macOS on Apple silicon (arm64) only.
+computers of your network's members. macOS on Apple silicon (arm64) and Intel (x86_64).
 
 ## Install
 
