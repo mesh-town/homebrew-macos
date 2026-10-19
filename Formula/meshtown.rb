@@ -1,9 +1,8 @@
 class Meshtown < Formula
   desc "Open websites through the computers of your network's members"
   homepage "https://github.com/mesh-town/meshtown"
-  url "https://github.com/mesh-town/meshtown/releases/download/v0.2.0/MeshTown-macos-arm64-0.2.0.zip"
-  # placeholder hash until the first release; scripts/bump.sh replaces it
-  sha256 "0" * 64
+  url "https://github.com/mesh-town/meshtown/releases/download/v0.2.3/MeshTown-macos-arm64-0.2.3.zip"
+  sha256 "9eb1c87047f36c8b4481e910b7465b6303359848586d61fc5a66e78999b8c865"
   license "AGPL-3.0-only"
 
   depends_on arch: :arm64

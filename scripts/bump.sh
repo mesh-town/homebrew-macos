@@ -14,7 +14,7 @@ die() {
 [ "$#" -ge 1 ] || usage
 version="$1"
 shift
-[[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "bad version '$version' (want X.Y.Z)" 
+[[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "bad version '$version' (want X.Y.Z)"
 
 sums=""
 base_url=""
