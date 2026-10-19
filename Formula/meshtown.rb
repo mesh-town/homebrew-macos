@@ -1,16 +1,16 @@
 class Meshtown < Formula
   desc "Open websites through the computers of your network's members"
   homepage "https://github.com/mesh-town/meshtown"
-  url "https://github.com/mesh-town/meshtown/releases/download/v0.2.5/MeshTown-macos-arm64-0.2.5.zip"
-  sha256 "d3b1738615aa82e6fd4637e002796582c52d3602c6dbc34e08bef5f6943f9311"
+  url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/MeshTown-macos-arm64-0.3.1.zip"
+  sha256 "f7d7ba1311a838a2f333b670cb18aa701924ba93aa6e8ca16b77991f3d309956"
   license "AGPL-3.0-only"
 
   depends_on arch: :arm64
   depends_on :macos
 
   resource "cli" do
-    url "https://github.com/mesh-town/meshtown/releases/download/v0.2.5/meshtown-cli-0.2.5-aarch64-apple-darwin.tar.gz"
-    sha256 "50f26f5ef39ec7868f2dc9e61774546ce7707fead56099d6a10a41beb68654a0"
+    url "https://github.com/mesh-town/meshtown/releases/download/v0.3.1/meshtown-cli-0.3.1-aarch64-apple-darwin.tar.gz"
+    sha256 "caf17412056526a5ddd17ce15b6f0d5363522cad7b613de76773479e2a980a9f"
   end
 
   def install
