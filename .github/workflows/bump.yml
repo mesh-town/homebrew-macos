@@ -1,0 +1,44 @@
+name: bump
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to set (X.Y.Z); empty means the latest release"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$INPUT_VERSION"
+          if [ -z "$version" ]; then
+            tag="$(gh release view --repo mesh-town/meshtown --json tagName -q .tagName)"
+            version="${tag#v}"
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Bump formula
+        run: scripts/bump.sh "$VERSION"
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet; then
+            echo "Formula is up to date"
+            exit 0
+          fi
+          git -c user.name='Mesh Town' -c user.email='meshtown.app@gmail.com' commit -am "meshtown $VERSION"
+          git push

@@ -1,0 +1,23 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tap this repository
+        run: brew tap mesh-town/tap "$GITHUB_WORKSPACE"
+
+      - name: Style
+        run: brew style --formula mesh-town/tap/meshtown
+
+      - name: Audit
+        run: brew audit --strict --formula mesh-town/tap/meshtown
+
+      - name: Bump script tests
+        run: scripts/bump_test.sh
