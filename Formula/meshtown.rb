@@ -1,16 +1,16 @@
 class Meshtown < Formula
   desc "Open websites through the computers of your network's members"
   homepage "https://github.com/mesh-town/meshtown"
-  url "https://github.com/mesh-town/meshtown/releases/download/v0.2.3/MeshTown-macos-arm64-0.2.3.zip"
-  sha256 "9eb1c87047f36c8b4481e910b7465b6303359848586d61fc5a66e78999b8c865"
+  url "https://github.com/mesh-town/meshtown/releases/download/v0.2.5/MeshTown-macos-arm64-0.2.5.zip"
+  sha256 "d3b1738615aa82e6fd4637e002796582c52d3602c6dbc34e08bef5f6943f9311"
   license "AGPL-3.0-only"
 
   depends_on arch: :arm64
   depends_on :macos
 
   resource "cli" do
-    url "https://github.com/mesh-town/meshtown/releases/download/v0.2.3/meshtown-cli-0.2.3-aarch64-apple-darwin.tar.gz"
-    sha256 "3c6ee8ad5743098c1fee7f7c9baaa614fedd9bec48c79fb7f65bbb8c95b35976"
+    url "https://github.com/mesh-town/meshtown/releases/download/v0.2.5/meshtown-cli-0.2.5-aarch64-apple-darwin.tar.gz"
+    sha256 "50f26f5ef39ec7868f2dc9e61774546ce7707fead56099d6a10a41beb68654a0"
   end
 
   def install
@@ -26,7 +26,7 @@ class Meshtown < Formula
     SH
     chmod 0755, bin/"meshtown"
 
-    resource("cli").stage { bin.install "meshtown" => "meshtown-cli" }
+    resource("cli").stage { bin.install "meshtown-cli" }
   end
 
   def caveats
