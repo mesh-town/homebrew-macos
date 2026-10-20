@@ -6,14 +6,14 @@ computers of your network's members. macOS on Apple silicon (arm64) and Intel (x
 ## Install
 
 ```sh
-brew install mesh-town/tap/meshtown
+brew install mesh-town/meshtown/meshtown
 ```
 
 This adds the tap and installs the formula in one step. Homebrew 7 and newer loads formulae only from
 third-party taps you trust, and installing by the full name above trusts the formula.
 
-If you ran `brew tap mesh-town/tap` first, `brew install meshtown` stops with "Refusing to load formula
-... from untrusted tap". Run `brew trust mesh-town/tap` (Homebrew 7 and newer) and install again.
+If you ran `brew tap mesh-town/meshtown` first, `brew install meshtown` stops with "Refusing to load formula
+... from untrusted tap". Run `brew trust mesh-town/meshtown` (Homebrew 7 and newer) and install again.
 
 ## Run
 
