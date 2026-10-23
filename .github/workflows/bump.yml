@@ -48,5 +48,5 @@ jobs:
             echo "Formula is up to date"
             exit 0
           fi
-          git -c user.name='Mesh Town' -c user.email='meshtown.app@gmail.com' commit -am "meshtown $VERSION"
+          git -c user.name='Mesh Town' -c user.email='340663027+mesh-town@users.noreply.github.com' commit -am "meshtown $VERSION"
           git push
