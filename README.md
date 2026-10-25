@@ -1,7 +1,13 @@
 # Mesh Town Homebrew tap
 
-Homebrew tap for [Mesh Town](https://github.com/mesh-town/meshtown): open websites through the
-computers of your network's members. macOS on Apple silicon (arm64) and Intel (x86_64).
+**Mesh Town** connects your computers, phones and routers into a private network and lets you reach the services
+running on them from anywhere — SSH, RDP, the web panel of a NAS or router — with no port forwarding, no public IP,
+no central server and no account to create. Nodes find each other on the public DHT and connect directly, and keep
+reconnecting when a device changes networks. A member can also act as an exit node: a local SOCKS5/HTTP proxy sends
+traffic out through a trusted member's connection. Main repository and documentation:
+[mesh-town/meshtown](https://github.com/mesh-town/meshtown).
+
+Homebrew tap for Mesh Town on macOS, Apple silicon (arm64) and Intel (x86_64).
 
 ## Install
 

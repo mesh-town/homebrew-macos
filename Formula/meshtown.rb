@@ -1,5 +1,5 @@
 class Meshtown < Formula
-  desc "Open websites through the computers of your network's members"
+  desc "Reach the services on your devices from anywhere, no central server or accounts"
   homepage "https://github.com/mesh-town/meshtown"
   # The checksum list of the release pins the archives below.
   url "https://github.com/mesh-town/meshtown/releases/download/v0.3.116/SHA256SUMS"
