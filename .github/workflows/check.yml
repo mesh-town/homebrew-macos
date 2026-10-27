@@ -11,13 +11,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Tap this repository
-        run: brew tap mesh-town/meshtown "$GITHUB_WORKSPACE"
+        run: brew tap mesh-town/macos "$GITHUB_WORKSPACE"
 
       - name: Style
-        run: brew style --formula mesh-town/meshtown/meshtown
+        run: brew style --formula mesh-town/macos/meshtown
 
       - name: Audit
-        run: brew audit --strict --formula mesh-town/meshtown/meshtown
+        run: brew audit --strict --formula mesh-town/macos/meshtown
 
       - name: Bump script tests
         run: scripts/bump_test.sh
