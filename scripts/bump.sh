@@ -40,7 +40,8 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 formula="${BUMP_FORMULA:-$here/../Formula/meshtown.rb}"
 [ -f "$formula" ] || die "formula not found: $formula"
 
-[ -n "$sums" ] || sums="https://github.com/mesh-town/meshtown/releases/download/v${version}/SHA256SUMS"
+[ -n "$base_url" ] || base_url="https://github.com/mesh-town/meshtown-dist/releases/download/v${version}"
+[ -n "$sums" ] || sums="$base_url/SHA256SUMS"
 
 sums_file="$(mktemp)"
 trap 'rm -f "$sums_file"' EXIT
@@ -91,18 +92,12 @@ PAIRS="$pairs" awk -v ver="$version" -v base="$base_url" '
   }
   /^  # placeholder hash/ { next }
   /^ +url "/ {
-    line = $0
-    gsub(/\/v[0-9]+\.[0-9]+\.[0-9]+\//, "/v" ver "/", line)
-    name = line
+    name = $0
     sub(/^[^"]*"/, "", name); sub(/"$/, "", name); sub(/^.*\//, "", name)
     sub(/-[0-9]+\.[0-9]+\.[0-9]+\.zip$/, "-" ver ".zip", name)
     sub(/^meshtown-cli-[0-9]+\.[0-9]+\.[0-9]+-/, "meshtown-cli-" ver "-", name)
-    if (base != "") {
-      match($0, /^ +/)
-      line = substr($0, 1, RLENGTH) "url \"" base "/" name "\""
-    } else {
-      sub(/[^\/"]*"$/, name "\"", line)
-    }
+    match($0, /^ +/)
+    line = substr($0, 1, RLENGTH) "url \"" base "/" name "\""
     cur = name
     urls++
     print line

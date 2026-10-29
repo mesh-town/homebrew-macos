@@ -34,7 +34,7 @@ jobs:
         run: |
           version="${INPUT_VERSION:-$PAYLOAD_VERSION}"
           if [ -z "$version" ]; then
-            tag="$(gh release view --repo mesh-town/meshtown --json tagName -q .tagName)"
+            tag="$(gh release view --repo mesh-town/meshtown-dist --json tagName -q .tagName)"
             version="${tag#v}"
           fi
           echo "VERSION=$version" >> "$GITHUB_ENV"

@@ -60,7 +60,7 @@ expect_fail() {
 # happy path
 reset
 if "$bump" 1.2.3 --sums "$sums_ok" > /dev/null 2>&1; then
-  base="https://github.com/mesh-town/meshtown/releases/download/v1.2.3"
+  base="https://github.com/mesh-town/meshtown-dist/releases/download/v1.2.3"
   [ "$(url_of "$APP")" = "      url \"$base/$APP\"" ] && pass "arm64 app url updated" || fail "arm64 app url updated"
   [ "$(url_of "$CLI")" = "      url \"$base/$CLI\"" ] && pass "arm64 cli url updated" || fail "arm64 cli url updated"
   [ "$(url_of "$APP_X")" = "      url \"$base/$APP_X\"" ] && pass "intel app url updated" || fail "intel app url updated"
@@ -109,6 +109,26 @@ if "$bump" 1.2.3 --base-url "http://127.0.0.1:8000/dl/" --sums "$sums_ok" > /dev
   ruby -c "$BUMP_FORMULA" > /dev/null 2>&1 && pass "ruby -c after --base-url" || fail "ruby -c after --base-url"
 else
   fail "--base-url (bump failed)"
+fi
+
+# a formula that still has the old host moves to the distribution repository
+reset
+sed "s#mesh-town/meshtown-dist/releases#mesh-town/meshtown/releases#" "$orig" > "$BUMP_FORMULA"
+if grep -q 'mesh-town/meshtown/releases' "$BUMP_FORMULA" && "$bump" 1.2.3 --sums "$sums_ok" > /dev/null 2>&1; then
+  grep -q 'mesh-town/meshtown/releases' "$BUMP_FORMULA" && fail "formula with the old host moves to dist" || pass "formula with the old host moves to dist"
+else
+  fail "formula with the old host moves to dist (setup or bump failed)"
+fi
+
+# default sums url is the distribution repository: a curl stub records the requested url
+reset
+mkdir "$work/stub"
+printf '#!/usr/bin/env bash\nprintf "%%s\\n" "$*" > "%s/curl_args"\nout=""\nwhile [ "$#" -gt 0 ]; do [ "$1" = -o ] && out="$2"; shift; done\ncp "%s" "$out"\n' "$work" "$sums_ok" > "$work/stub/curl"
+chmod +x "$work/stub/curl"
+if PATH="$work/stub:$PATH" "$bump" 1.2.3 > /dev/null 2>&1 && grep -q 'https://github.com/mesh-town/meshtown-dist/releases/download/v1.2.3/SHA256SUMS' "$work/curl_args"; then
+  pass "default sums url is dist"
+else
+  fail "default sums url is dist"
 fi
 
 # failures

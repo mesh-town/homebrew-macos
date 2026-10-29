@@ -1,8 +1,8 @@
 class Meshtown < Formula
   desc "Reach the services on your devices from anywhere, no central server or accounts"
-  homepage "https://github.com/mesh-town/meshtown"
+  homepage "https://mesh-town.github.io/"
   # The checksum list of the release pins the archives below.
-  url "https://github.com/mesh-town/meshtown/releases/download/v0.3.195/SHA256SUMS"
+  url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.195/SHA256SUMS"
   sha256 "790310d62f7b61e81805db32d1cb3010c405acedadd440b9d92e2c2ef7af30eb"
   license "AGPL-3.0-only"
 
@@ -10,24 +10,24 @@ class Meshtown < Formula
 
   on_arm do
     resource "app" do
-      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.195/MeshTown-macos-arm64-0.3.195.zip"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.195/MeshTown-macos-arm64-0.3.195.zip"
       sha256 "2d8910df229d27586ceaf8b12329e6826ab65079a257095b0cdc90680a427904"
     end
 
     resource "cli" do
-      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.195/meshtown-cli-0.3.195-aarch64-apple-darwin.tar.gz"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.195/meshtown-cli-0.3.195-aarch64-apple-darwin.tar.gz"
       sha256 "46c7edcfb9d10621083b55ca58d302219e3e46bb79a7383af88c4499abf96186"
     end
   end
 
   on_intel do
     resource "app" do
-      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.195/MeshTown-macos-x86_64-0.3.195.zip"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.195/MeshTown-macos-x86_64-0.3.195.zip"
       sha256 "bcb10710ed3ba12768620abb8a54bed49c0ae3e136c23683171c2ee17291b135"
     end
 
     resource "cli" do
-      url "https://github.com/mesh-town/meshtown/releases/download/v0.3.195/meshtown-cli-0.3.195-x86_64-apple-darwin.tar.gz"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.195/meshtown-cli-0.3.195-x86_64-apple-darwin.tar.gz"
       sha256 "e6f44045cc595deba8404086db6f0831dbcb328c3afada8431559bab17dd7482"
     end
   end

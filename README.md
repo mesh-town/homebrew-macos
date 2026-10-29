@@ -53,7 +53,7 @@ downloaded files, so Gatekeeper shows no prompt. No root access and no backgroun
 ## How the formula is updated
 
 The `bump` workflow runs once a day (or manually from the Actions tab) and takes the latest release of
-`mesh-town/meshtown`. It runs `scripts/bump.sh <version>`, which reads `SHA256SUMS` of that release and
+`mesh-town/meshtown-dist`. It runs `scripts/bump.sh <version>`, which reads `SHA256SUMS` of that release and
 rewrites the version in the five `url`s of `Formula/meshtown.rb` (`SHA256SUMS`, then the app zip and the `cli` archive for
 arm64 and for Intel) and sets each `sha256` to the matching entry of `SHA256SUMS` (for `SHA256SUMS` itself, the hash of
 the downloaded file). `scripts/bump_test.sh` tests the script offline. The `check` workflow runs `brew style`,
