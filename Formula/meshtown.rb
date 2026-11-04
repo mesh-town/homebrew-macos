@@ -2,33 +2,33 @@ class Meshtown < Formula
   desc "Reach the services on your devices from anywhere, no central server or accounts"
   homepage "https://mesh-town.github.io/"
   # The checksum list of the release pins the archives below.
-  url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.278/SHA256SUMS"
-  sha256 "4faf35c7562d9f392910b72c5822c2da3d059d551553e57ab900d12a427813d0"
+  url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.281/SHA256SUMS"
+  sha256 "a73b0499dc432a94d88b705bbec6995306d14dd4eea6bfadbd46f396043be243"
   license "AGPL-3.0-only"
 
   depends_on :macos
 
   on_arm do
     resource "app" do
-      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.278/MeshTown-macos-arm64-0.3.278.zip"
-      sha256 "9d01a2b58806a081ea6820f160e66ef69cfb8342f6e0f0afde7e4744d3ce8a63"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.281/MeshTown-macos-arm64-0.3.281.zip"
+      sha256 "6b5aeb88ce5eb2074fcac3a97c655274b8df3956a64eb155921369aa3e1a9558"
     end
 
     resource "cli" do
-      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.278/meshtown-cli-0.3.278-aarch64-apple-darwin.tar.gz"
-      sha256 "e90cf155886ecbf56ed8518866741b057e210f83f77e5c8feeb8c17fe69d8084"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.281/meshtown-cli-0.3.281-aarch64-apple-darwin.tar.gz"
+      sha256 "e71294239cc5c17fb1d3c4e1af9bace0c2b178b3673e8d0e50a2f71066157de4"
     end
   end
 
   on_intel do
     resource "app" do
-      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.278/MeshTown-macos-x86_64-0.3.278.zip"
-      sha256 "69dea44b1dd7b922227345589584a3a27fbb62820ae5ddc25cc3dde08a38411b"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.281/MeshTown-macos-x86_64-0.3.281.zip"
+      sha256 "72a0e7e88d977d157ae51b1648058cb13475f2ed8315095cf677c04b7542046d"
     end
 
     resource "cli" do
-      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.278/meshtown-cli-0.3.278-x86_64-apple-darwin.tar.gz"
-      sha256 "d2a63234c44bf3df44c399b08fe31df1ea57c62d34035552cffe9c05c85b5239"
+      url "https://github.com/mesh-town/meshtown-dist/releases/download/v0.3.281/meshtown-cli-0.3.281-x86_64-apple-darwin.tar.gz"
+      sha256 "0aec3da30f31912b58b0749dd60478cdb20f7ba3c41f059e6da83e369af09783"
     end
   end
 
