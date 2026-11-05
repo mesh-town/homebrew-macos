@@ -3,13 +3,14 @@
 **[Mesh Town](https://mesh-town.github.io/)** — reach your home server, NAS or office PC from anywhere: no port
 forwarding, no central server, no accounts.
 
-Mesh Town links your own computers, phones and routers directly to each other, so you can open a NAS web
-panel, SSH into a home server or connect to a work PC by remote desktop from any network. Free and open source, for
-macOS, Windows, Linux, Android and OpenWrt or Keenetic routers. Website:
-[mesh-town.github.io](https://mesh-town.github.io/) · source and documentation:
-[mesh-town/meshtown](https://github.com/mesh-town/meshtown).
+Mesh Town links your own computers, phones and routers directly, so you can open a NAS panel, SSH into a home
+server or use a work PC by remote desktop from any network. It is free and open source, for macOS, Windows, Linux,
+Android and OpenWrt or Keenetic routers.
 
-Homebrew tap for Mesh Town on macOS, Apple silicon (arm64) and Intel (x86_64).
+- Website: [mesh-town.github.io](https://mesh-town.github.io/)
+- Source and documentation: [mesh-town/meshtown](https://github.com/mesh-town/meshtown)
+
+This is the Homebrew tap for Mesh Town on macOS, Apple silicon (arm64) and Intel (x86_64).
 
 ## Install
 
@@ -52,12 +53,17 @@ downloaded files, so Gatekeeper shows no prompt. No root access and no backgroun
 
 ## How the formula is updated
 
-The `bump` workflow runs once a day (or manually from the Actions tab) and takes the latest release of
-`mesh-town/meshtown-dist`. It runs `scripts/bump.sh <version>`, which reads `SHA256SUMS` of that release and
-rewrites the version in the five `url`s of `Formula/meshtown.rb` (`SHA256SUMS`, then the app zip and the `cli` archive for
-arm64 and for Intel) and sets each `sha256` to the matching entry of `SHA256SUMS` (for `SHA256SUMS` itself, the hash of
-the downloaded file). `scripts/bump_test.sh` tests the script offline. The `check` workflow runs `brew style`,
-`brew audit --strict` and those tests.
+The `bump` workflow runs daily, on a release notification, or manually from the Actions tab (with an optional
+version). It takes the given version, or the latest release of `mesh-town/meshtown-dist`, and runs
+`scripts/bump.sh <version>`. The script:
+
+1. reads `SHA256SUMS` of that release;
+2. rewrites the version in the five `url`s of `Formula/meshtown.rb`: `SHA256SUMS`, then the app zip and the `cli`
+   archive for arm64 and for Intel;
+3. sets each `sha256` to the matching `SHA256SUMS` entry (for `SHA256SUMS` itself, the hash of the downloaded file).
+
+The workflow commits the change if the formula differs. `scripts/bump_test.sh` tests the script offline. The `check`
+workflow runs `brew style`, `brew audit --strict` and those tests.
 
 ## Licenses
 
