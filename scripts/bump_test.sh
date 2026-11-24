@@ -75,6 +75,7 @@ if "$bump" 1.2.3 --sums "$sums_ok" > /dev/null 2>&1; then
   grep -q '^  version ' "$BUMP_FORMULA" && fail "no separate version line" || pass "no separate version line"
   grep -q 'placeholder hash' "$BUMP_FORMULA" && fail "placeholder comment removed" || pass "placeholder comment removed"
   ruby -c "$BUMP_FORMULA" > /dev/null 2>&1 && pass "ruby -c after bump" || fail "ruby -c after bump"
+  "$here/twin.sh" --check "$BUMP_FORMULA" && pass "twin rewritten with the bump" || fail "twin rewritten with the bump"
 else
   fail "happy path (bump failed)"
 fi

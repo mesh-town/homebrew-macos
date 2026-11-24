@@ -32,6 +32,8 @@ class Meshtown < Formula
     end
   end
 
+  conflicts_with "mesh-town/macos/mesh-town", because: "it is the same app under another name"
+
   def install
     resource("app").stage { (prefix/"MeshTown.app").install Dir["*"] }
 

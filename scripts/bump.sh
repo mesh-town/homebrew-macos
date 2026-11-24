@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Update the version in all urls and sha256 values of Formula/meshtown.rb from a release's SHA256SUMS:
 # the SHA256SUMS file itself, then the app zip and the cli archive for arm64 and for Intel.
+# Then scripts/twin.sh rewrites Formula/mesh-town.rb, the same formula under the second spelling of the name.
 set -euo pipefail
 
 usage() {
@@ -120,3 +121,4 @@ mv "$tmp" "$formula"
 rm -f "$sums_file"
 trap - EXIT
 echo "bumped $(basename "$formula") to $version"
+"$here/twin.sh" "$formula"

@@ -7,6 +7,9 @@ on:
 jobs:
   check:
     runs-on: macos-15
+    env:
+      # Homebrew 7 refuses to load formulae from a tap it does not trust; this checkout is the tap under test.
+      HOMEBREW_NO_REQUIRE_TAP_TRUST: "1"
     steps:
       - uses: actions/checkout@v4
 
@@ -14,10 +17,16 @@ jobs:
         run: brew tap mesh-town/macos "$GITHUB_WORKSPACE"
 
       - name: Style
-        run: brew style --formula mesh-town/macos/meshtown
+        run: brew style --formula mesh-town/macos/meshtown mesh-town/macos/mesh-town
 
       - name: Audit
-        run: brew audit --strict --formula mesh-town/macos/meshtown
+        run: brew audit --strict --formula mesh-town/macos/meshtown mesh-town/macos/mesh-town
+
+      - name: mesh-town.rb is in sync with meshtown.rb
+        run: scripts/twin.sh --check
 
       - name: Bump script tests
         run: scripts/bump_test.sh
+
+      - name: Twin script tests
+        run: scripts/twin_test.sh
